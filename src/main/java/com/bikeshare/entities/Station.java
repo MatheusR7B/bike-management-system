@@ -54,8 +54,8 @@ public class Station {
         this.capacity = capacity;
     }
     
-    public void addBike(Bike bike) {
-        bikes.add(bike);
+    public boolean addBike(Bike bike) {
+        return bikes.add(bike);
     }
 
     @Override
@@ -72,11 +72,11 @@ public class Station {
 
     @Override
     public String toString() {
-        return "Station{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", capacity=" + capacity +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("Estação ").append(name).append("\n");
+        for (Bike bike : this.bikes) {
+            sb.append(bike.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }

@@ -1,24 +1,23 @@
 package com.bikeshare.entities;
 
 import com.bikeshare.enums.BikeStatus;
+import com.bikeshare.enums.BikeType;
 
 import java.util.Objects;
 
-public class Bike {
+public class Bike extends Station {
 
     private int id;
-    private String model;
-    private String type;
+    private BikeType model;
     private BikeStatus status;
     private Double mileage;
 
     public Bike() {
 
     }
-    public Bike(int id, String model, String type, BikeStatus status, Double mileage) {
+    public Bike(int id, BikeType model, BikeStatus status, Double mileage) {
         this.id = id;
         this.model = model;
-        this.type = type;
         this.status = status;
         this.mileage = mileage;
     }
@@ -31,20 +30,12 @@ public class Bike {
         this.id = id;
     }
 
-    public String getModel() {
+    public BikeType getModel() {
         return model;
     }
 
-    public void setModel(String model) {
+    public void setModel(BikeType model) {
         this.model = model;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public BikeStatus getStatus() {
@@ -73,5 +64,10 @@ public class Bike {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "└── Bike #" + id + " - " + status;
     }
 }
