@@ -12,6 +12,8 @@ public class Bike extends Station {
     private BikeStatus status;
     private Double mileage;
 
+    private Station station;
+
     public Bike() {
 
     }
@@ -52,6 +54,10 @@ public class Bike extends Station {
 
     public void setMileage(Double mileage) {
         this.mileage = mileage;
+    }
+
+    public Station getStation() {
+        return station;
     }
 
     @Override

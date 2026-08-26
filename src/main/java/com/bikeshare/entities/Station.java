@@ -26,8 +26,7 @@ public class Station {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id) { this.id = id;
     }
 
     public String getName() {
@@ -54,8 +53,12 @@ public class Station {
         this.capacity = capacity;
     }
     
-    public boolean addBike(Bike bike) {
-        return bikes.add(bike);
+    public void addBike(Bike bike) {
+        bikes.add(bike);
+    }
+
+    public void removeBike(Bike bike) {
+        bikes.remove(bike);
     }
 
     @Override
