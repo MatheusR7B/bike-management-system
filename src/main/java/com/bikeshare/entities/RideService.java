@@ -14,4 +14,11 @@ public class RideService {
         return ride;
     };
 
+    public void finishRide(Ride ride, Station endStation) {
+        endStation.addBike(ride.getBike());
+        ride.getBike().setStatus(BikeStatus.DISPONIVEL);
+
+        ride.finish(endStation, LocalDateTime.now());
+    }
+
 }

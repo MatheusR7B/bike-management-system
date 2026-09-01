@@ -113,7 +113,6 @@ public class Program {
                     System.out.print("Id do cliente: ");
                     int iClient = sc.nextInt();
                     Customer idCliente = client.get(iClient);
-
                     Ride novaRide = rideService.startRide(bic, est, idCliente);
                     ride.put(idRine, novaRide);
                     idRine++;
