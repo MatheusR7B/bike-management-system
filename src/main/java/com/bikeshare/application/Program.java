@@ -47,6 +47,7 @@ public class Program {
 
             switch (opcao) {
                 case 1:
+                    System.out.println();
                     sc.nextLine();
                     int idStation = proximoIdStation;
                     System.out.print("Nome: ");
@@ -60,6 +61,7 @@ public class Program {
                     break;
 
                 case 2:
+                    System.out.println();
                     int idBike = proximoIdBike;
                     System.out.print("Modelo: ");
                     int model = sc.nextInt();
@@ -86,6 +88,7 @@ public class Program {
                     break;
 
                 case 3:
+                    System.out.println();
                     int idClient = proximoIdClient;
                     System.out.print("Nome: ");
                     name = sc.nextLine();
@@ -97,6 +100,7 @@ public class Program {
                     break;
 
                 case 4:
+                    System.out.println();
                     System.out.print("Id da estação inicial: ");
                     int startStation = sc.nextInt();
                     est = station.get(startStation);
@@ -119,7 +123,16 @@ public class Program {
 
                     break;
 
+                case 5:
+
+                    break;
+
+                case 6:
+
+                    break;
+
                 case 7:
+                    System.out.println();
                     for (Station station1 : station.values()) {
                         System.out.println(station1.toString());
                     }

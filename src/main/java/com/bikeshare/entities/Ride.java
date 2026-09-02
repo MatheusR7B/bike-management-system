@@ -3,6 +3,7 @@ package com.bikeshare.entities;
 import com.bikeshare.enums.BikeStatus;
 import com.bikeshare.enums.RideStatus;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Ride {
@@ -15,6 +16,8 @@ public class Ride {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private Long duration;
+    private Double princing;
 
     public Bike getBike() {
         return bike;
@@ -52,9 +55,11 @@ public class Ride {
         status = RideStatus.EM_ANDAMENTO;
     }
 
-    public void finish(Station endStation, LocalDateTime endTime) {
+    public void finish(Station endStation, LocalDateTime endTime, Long duration, double princing) {
         this.endStation = endStation;
         this.endTime = endTime;
+        this.duration = duration;
+        this.princing = princing;
         status = RideStatus.FINALIZADA;
     }
 
