@@ -7,19 +7,20 @@ import java.time.LocalDateTime;
 
 public class RideService {
 
-    public Ride startRide(Bike bike, Station startStation, Customer client) {
+    public Ride startRide(int id, Bike bike, Station startStation, Customer client) {
         startStation.removeBike(bike);
         bike.setStatus(BikeStatus.EM_USO);
 
-        Ride ride = new Ride(bike, client, startStation, LocalDateTime.now());
+        Ride ride = new Ride(id, bike, client, startStation, LocalDateTime.now());
         return ride;
     };
 
     public Double finishRide(Ride ride, Station endStation) {
         endStation.addBike(ride.getBike());
         ride.getBike().setStatus(BikeStatus.DISPONIVEL);
+        LocalDateTime now = LocalDateTime.now();
 
-        Long duration = Duration.between(ride.getStartTime(), ride.getEndTime()).toMinutes();
+        Long duration = Duration.between(ride.getStartTime(), now).toMinutes();
         double princing = 0.0;
         if (duration <= 30) {
             princing = 4.0;
@@ -29,7 +30,7 @@ public class RideService {
             princing = 4.0 + 2 * Math.ceilDiv(minExcendentes, 10);
         }
 
-        ride.finish(endStation, LocalDateTime.now(), duration, princing);
+        ride.finish(endStation, now, duration, princing);
 
         return princing;
 

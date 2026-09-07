@@ -3,6 +3,7 @@ package com.bikeshare.application;
 import com.bikeshare.entities.*;
 import com.bikeshare.enums.BikeStatus;
 import com.bikeshare.enums.BikeType;
+import com.bikeshare.enums.RideStatus;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,7 @@ public class Program {
         int idRine = 1;
 
         do {
+            System.out.println();
             System.out.println("1 - Cadastrar estacao");
             System.out.println("2 - Cadastar bicicleta");
             System.out.println("3 - Cadastrar cliente");
@@ -62,7 +64,7 @@ public class Program {
 
                 case 2:
                     System.out.println();
-                    int idBike = proximoIdBike;
+                    //int idBike = proximoIdBike;
                     System.out.print("Modelo: ");
                     int model = sc.nextInt();
                     sc.nextLine();
@@ -81,8 +83,9 @@ public class Program {
                         System.out.println("Estação não encontrada!");
                         break;
                     }
-                    Bike newBike = new Bike(idBike, tipo, tatus, num);
-                    bikes.put(idBike, newBike);
+                    Bike newBike = new Bike(proximoIdBike, tipo, tatus, num);
+                    newBike.setStation(est);
+                    bikes.put(proximoIdBike, newBike);
                     est.addBike(newBike);
                     proximoIdBike++;
                     break;
@@ -91,12 +94,15 @@ public class Program {
                     System.out.println();
                     int idClient = proximoIdClient;
                     System.out.print("Nome: ");
+                    sc.nextLine();
                     name = sc.nextLine();
                     System.out.print("Email: ");
                     endereco = sc.nextLine();
                     System.out.print("Data de nascimento: ");
                     String data = sc.nextLine();
                     birth = LocalDate.parse(data, fmt);
+                    client.put(proximoIdClient, new Customer(proximoIdClient, name, endereco, birth));
+
                     break;
 
                 case 4:
@@ -117,13 +123,30 @@ public class Program {
                     System.out.print("Id do cliente: ");
                     int iClient = sc.nextInt();
                     Customer idCliente = client.get(iClient);
-                    Ride novaRide = rideService.startRide(bic, est, idCliente);
+                    Ride novaRide = rideService.startRide(idRine, bic, est, idCliente);
                     ride.put(idRine, novaRide);
                     idRine++;
 
                     break;
 
                 case 5:
+                    System.out.println();
+
+                    List<Ride> listRide = ride.values().stream().filter(b -> b.getStatus() == RideStatus.EM_ANDAMENTO).toList();
+                    for (Ride rid : listRide) {
+                        System.out.println(rid);
+                    }
+
+                    System.out.println();
+                    System.out.print("Id da ride: ");
+                    int rideId = sc.nextInt();
+                    Ride rideUse = ride.get(rideId);
+
+                    System.out.print("Id da estação final: ");
+                    stationId = sc.nextInt();
+                    est = station.get(stationId);
+                    double precing = rideService.finishRide(rideUse, est);
+                    System.out.println(precing);
 
                     break;
 
@@ -134,7 +157,11 @@ public class Program {
                 case 7:
                     System.out.println();
                     for (Station station1 : station.values()) {
-                        System.out.println(station1.toString());
+                        System.out.println();
+                        System.out.println(station1.getName());
+                        for (Bike bike : station1.getBikes()) {
+                            System.out.println(bike);
+                        }
                     }
                     break;
 

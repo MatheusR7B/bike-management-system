@@ -5,9 +5,13 @@ import com.bikeshare.enums.RideStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Ride {
 
+    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+    private int id;
     private Bike bike;
     private RideStatus status;
     private Customer customer;
@@ -47,7 +51,8 @@ public class Ride {
         return endTime;
     }
 
-    public Ride(Bike bike, Customer customer, Station startStation, LocalDateTime startTime) {
+    public Ride(int id, Bike bike, Customer customer, Station startStation, LocalDateTime startTime) {
+        this.id = id;
         this.bike = bike;
         this.customer = customer;
         this.startStation = startStation;
@@ -63,4 +68,12 @@ public class Ride {
         status = RideStatus.FINALIZADA;
     }
 
+    @Override
+    public String toString() {
+        return "Ride # " + id +
+                " bike=" + bike +
+                ", Cliente - " + customer.toString() +
+                " " + startStation +
+                ", Inicio corrida - " + startTime.format(fmt);
+    }
 }

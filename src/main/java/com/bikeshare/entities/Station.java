@@ -52,7 +52,11 @@ public class Station {
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
-    
+
+    public Set<Bike> getBikes() {
+        return bikes;
+    }
+
     public void addBike(Bike bike) {
         bikes.add(bike);
     }
@@ -77,9 +81,6 @@ public class Station {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Estação ").append(name).append("\n");
-        for (Bike bike : this.bikes) {
-            sb.append(bike.toString()).append("\n");
-        }
         return sb.toString();
     }
 }

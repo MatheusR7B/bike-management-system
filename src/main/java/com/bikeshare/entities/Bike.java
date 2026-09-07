@@ -60,6 +60,10 @@ public class Bike extends Station {
         return station;
     }
 
+    public void setStation(Station station) {
+        this.station = station;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
