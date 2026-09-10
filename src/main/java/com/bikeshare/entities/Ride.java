@@ -51,6 +51,10 @@ public class Ride {
         return endTime;
     }
 
+    public Long getDuration() {
+        return duration;
+    }
+
     public Ride(int id, Bike bike, Customer customer, Station startStation, LocalDateTime startTime) {
         this.id = id;
         this.bike = bike;

@@ -8,6 +8,7 @@ import com.bikeshare.enums.RideStatus;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Program {
     public static void main(String[] args) {
@@ -40,9 +41,8 @@ public class Program {
             System.out.println("3 - Cadastrar cliente");
             System.out.println("4 - Iniciar viajem");
             System.out.println("5 - Finalizar viajem");
-            System.out.println("6 - Listar bicicletas");
-            System.out.println("7 - Listar estações");
-
+            System.out.println("6 - Listar estações");
+            System.out.println("7 - Relatório");
             System.out.println("0 - Sair");
 
             opcao = sc.nextInt();
@@ -131,7 +131,6 @@ public class Program {
 
                 case 5:
                     System.out.println();
-
                     List<Ride> listRide = ride.values().stream().filter(b -> b.getStatus() == RideStatus.EM_ANDAMENTO).toList();
                     for (Ride rid : listRide) {
                         System.out.println(rid);
@@ -151,10 +150,6 @@ public class Program {
                     break;
 
                 case 6:
-
-                    break;
-
-                case 7:
                     System.out.println();
                     for (Station station1 : station.values()) {
                         System.out.println();
@@ -163,6 +158,48 @@ public class Program {
                             System.out.println(bike);
                         }
                     }
+                    break;
+
+                case 7:
+
+                    Map<BikeStatus, Long> countStatus = bikes.values().stream().collect(Collectors.groupingBy(Bike::getStatus, Collectors.counting()));
+
+                    Map<Bike, Long> countBike = ride.values().stream().filter(b -> b.getStatus() == RideStatus.FINALIZADA).collect(Collectors.groupingBy(Ride::getBike, Collectors.counting()));
+                    Optional<Map.Entry<Bike, Long>> maxBikeEntry = countBike.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue));
+
+                    Map<Station, Long> countStation = ride.values().stream().collect(Collectors.groupingBy(Ride::getStartStation, Collectors.counting()));
+                    Optional<Map.Entry<Station, Long>> maxStationEntry = countStation.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue));
+
+                    List<Ride> listRideFinish = ride.values().stream().filter(b -> b.getStatus() == RideStatus.FINALIZADA).toList();
+                    Long avgDuration = Math.round(listRideFinish.stream().mapToLong(Ride::getDuration).average().orElse(0.0));
+
+                    System.out.println("========== RELATÓRIO ==========");
+                    System.out.println();
+                    System.out.println("Total de bicicletas: " + bikes.size());
+                    System.out.println("Disponiveis: " + countStatus.get(BikeStatus.DISPONIVEL));
+                    System.out.println("Em uso: " + countStatus.get(BikeStatus.EM_USO));
+                    System.out.println("Manutenção: " + countStatus.get(BikeStatus.MANUTENCAO));
+                    System.out.println();
+                    System.out.println("Viagens realizadas: " + ride.values().stream().filter(b -> b.getStatus() == RideStatus.FINALIZADA).count());
+                    System.out.println();
+                    if (maxBikeEntry.isPresent()) {
+                        System.out.println("Bicicleta mais utilizada: ");
+                        Map.Entry<Bike, Long> entry = maxBikeEntry.get();
+                        System.out.println("#" + entry.getKey().getId() + " - " + entry.getValue() + " viagens");
+                    } else {
+                        System.out.println("Nenhuma bicicleta utilizada!");
+                    }
+
+                    if (maxStationEntry.isPresent()) {
+                        System.out.println("Estação mais movimentada: ");
+                        Map.Entry<Station, Long> entry = maxStationEntry.get();
+                        System.out.println(entry.getKey().getName() + " - " + entry.getValue() + " retiradas");
+                    } else {
+                        System.out.println("Nenhuma viagem realizada!");
+                    }
+
+                    System.out.println("Tempo médio das viagens: ");
+                    System.out.println(avgDuration + " minutos");
                     break;
 
                 case 0:
