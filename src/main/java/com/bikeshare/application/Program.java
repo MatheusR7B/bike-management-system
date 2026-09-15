@@ -60,6 +60,7 @@ public class Program {
                     numb = sc.nextInt();
                     station.put(idStation, new Station(idStation, name, endereco, numb));
                     proximoIdStation++;
+                    System.out.println("Estação cadastrada!");
                     break;
 
                 case 2:
@@ -83,11 +84,17 @@ public class Program {
                         System.out.println("Estação não encontrada!");
                         break;
                     }
-                    Bike newBike = new Bike(proximoIdBike, tipo, tatus, num);
-                    newBike.setStation(est);
-                    bikes.put(proximoIdBike, newBike);
-                    est.addBike(newBike);
-                    proximoIdBike++;
+
+                    if (est.getBikes().size() < est.getCapacity()) {
+                        Bike newBike = new Bike(proximoIdBike, tipo, tatus, num);
+                        newBike.setStation(est);
+                        bikes.put(proximoIdBike, newBike);
+                        est.addBike(newBike);
+                        proximoIdBike++;
+                        System.out.println("Bike cadastrada com sucesso!");
+                    }else {
+                        System.out.println("Estação sem capacidade disponível!");
+                    }
                     break;
 
                 case 3:
@@ -102,7 +109,7 @@ public class Program {
                     String data = sc.nextLine();
                     birth = LocalDate.parse(data, fmt);
                     client.put(proximoIdClient, new Customer(proximoIdClient, name, endereco, birth));
-
+                    proximoIdClient++;
                     break;
 
                 case 4:
@@ -110,7 +117,11 @@ public class Program {
                     System.out.print("Id da estação inicial: ");
                     int startStation = sc.nextInt();
                     est = station.get(startStation);
-                    List<Bike> bikeDisp = bikes.values().stream().filter(b -> b.getStation() == est &&  b.getStatus() == BikeStatus.DISPONIVEL).toList();
+                    if (est == null) {
+                        System.out.println("Estação nâo encontrada!");
+                        break;
+                    }
+                    List<Bike> bikeDisp = bikes.values().stream().filter(b -> b.getStation() == est && b.getStatus() == BikeStatus.DISPONIVEL).toList();
                     System.out.println(est.getName());
                     for (Bike bike : bikeDisp) {
                         System.out.println(bike);
@@ -119,10 +130,18 @@ public class Program {
                     System.out.print("Id da Bicicleta: ");
                     int iBike = sc.nextInt();
                     Bike bic = bikes.get(iBike);
+                    if (bic == null || bic.getStatus() != BikeStatus.DISPONIVEL) {
+                        System.out.println("Bicicleta indisponível ou não encontrada!");
+                        break;
+                    }
 
                     System.out.print("Id do cliente: ");
                     int iClient = sc.nextInt();
                     Customer idCliente = client.get(iClient);
+                    if (idCliente == null) {
+                        System.out.println("Clinte não cadastrado!");
+                        break;
+                    }
                     Ride novaRide = rideService.startRide(idRine, bic, est, idCliente);
                     ride.put(idRine, novaRide);
                     idRine++;
@@ -140,12 +159,19 @@ public class Program {
                     System.out.print("Id da ride: ");
                     int rideId = sc.nextInt();
                     Ride rideUse = ride.get(rideId);
+                    if (rideUse == null) {
+                        System.out.println("Ride não encontrada!");
+                        break;
+                    }
 
                     System.out.print("Id da estação final: ");
                     stationId = sc.nextInt();
                     est = station.get(stationId);
+                    if (est == null) {
+                        System.out.println("Estação não encontrada!");
+                    }
                     double precing = rideService.finishRide(rideUse, est);
-                    System.out.println(precing);
+                    System.out.println("Preço da corrida: " + precing);
 
                     break;
 

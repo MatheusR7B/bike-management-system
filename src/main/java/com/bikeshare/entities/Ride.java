@@ -74,10 +74,10 @@ public class Ride {
 
     @Override
     public String toString() {
-        return "Ride # " + id +
-                " bike=" + bike +
-                ", Cliente - " + customer.toString() +
-                " " + startStation +
+        return "Ride #" + id +
+                " - Bike: #" + bike.getId() + ", " + bike.getStatus() +
+                ", Cliente: " + customer.toString() +
+                ", " + startStation +
                 ", Inicio corrida - " + startTime.format(fmt);
     }
 }
