@@ -1,11 +1,19 @@
 package com.bikeshare.entities;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
 public class Station {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
     private String name;
     private String address;
@@ -15,8 +23,7 @@ public class Station {
     
     public Station() {
     }
-    public Station(int id, String name, String address, int capacity) {
-        this.id = id;
+    public Station(String name, String address, int capacity) {
         this.name = name;
         this.address = address;
         this.capacity = capacity;

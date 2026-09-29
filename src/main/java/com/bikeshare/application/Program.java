@@ -58,7 +58,7 @@ public class Program {
                     endereco = sc.nextLine();
                     System.out.print("Capacidade: ");
                     numb = sc.nextInt();
-                    station.put(idStation, new Station(idStation, name, endereco, numb));
+                    station.put(idStation, new Station(name, endereco, numb));
                     proximoIdStation++;
                     System.out.println("Estação cadastrada!");
                     break;
