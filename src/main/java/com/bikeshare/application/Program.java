@@ -1,9 +1,12 @@
 package com.bikeshare.application;
 
 import com.bikeshare.entities.*;
+import com.bikeshare.entities.dao.StationDao;
 import com.bikeshare.enums.BikeStatus;
 import com.bikeshare.enums.BikeType;
 import com.bikeshare.enums.RideStatus;
+import com.bikeshare.persistence.JPAUtil;
+import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +17,8 @@ public class Program {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+        //EntityManagerFactory emf = JPAUtil.getEmf();
+        StationDao stationDao = new StationDao();
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -51,15 +56,13 @@ public class Program {
                 case 1:
                     System.out.println();
                     sc.nextLine();
-                    int idStation = proximoIdStation;
                     System.out.print("Nome: ");
                     name = sc.nextLine();
                     System.out.print("Endereco: ");
                     endereco = sc.nextLine();
                     System.out.print("Capacidade: ");
                     numb = sc.nextInt();
-                    station.put(idStation, new Station(name, endereco, numb));
-                    proximoIdStation++;
+                    stationDao.salvar(new Station(name, endereco, numb));
                     System.out.println("Estação cadastrada!");
                     break;
 
@@ -237,5 +240,6 @@ public class Program {
             }
         } while (opcao != 0);
         sc.close();
+        JPAUtil.close();
         }
     }

@@ -2,16 +2,27 @@ package com.bikeshare.entities;
 
 import com.bikeshare.enums.BikeStatus;
 import com.bikeshare.enums.BikeType;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
-public class Bike extends Station {
+@Entity
+public class Bike {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
+
+    @Enumerated(EnumType.STRING)
     private BikeType model;
+
+    @Enumerated(EnumType.STRING)
     private BikeStatus status;
+
     private Double mileage;
 
+    @ManyToOne
+    @JoinColumn(name = "StationId")
     private Station station;
 
     public Bike() {

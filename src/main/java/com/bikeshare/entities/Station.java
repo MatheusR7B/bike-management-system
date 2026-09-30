@@ -1,9 +1,6 @@
 package com.bikeshare.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,7 +15,8 @@ public class Station {
     private String name;
     private String address;
     private int capacity;
-    
+
+    @OneToMany(mappedBy = "station")
     private Set<Bike> bikes = new HashSet<>();
     
     public Station() {
