@@ -28,8 +28,7 @@ public class Bike {
     public Bike() {
 
     }
-    public Bike(int id, BikeType model, BikeStatus status, Double mileage) {
-        this.id = id;
+    public Bike(BikeType model, BikeStatus status, Double mileage) {
         this.model = model;
         this.status = status;
         this.mileage = mileage;

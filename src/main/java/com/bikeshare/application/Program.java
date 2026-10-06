@@ -1,6 +1,9 @@
 package com.bikeshare.application;
 
 import com.bikeshare.entities.*;
+import com.bikeshare.entities.dao.BikeDao;
+import com.bikeshare.entities.dao.CustomerDao;
+import com.bikeshare.entities.dao.RideDao;
 import com.bikeshare.entities.dao.StationDao;
 import com.bikeshare.enums.BikeStatus;
 import com.bikeshare.enums.BikeType;
@@ -19,6 +22,9 @@ public class Program {
         Scanner sc = new Scanner(System.in);
         //EntityManagerFactory emf = JPAUtil.getEmf();
         StationDao stationDao = new StationDao();
+        BikeDao bikeDao = new BikeDao();
+        CustomerDao customerDao = new CustomerDao();
+        RideDao rideDao = new RideDao();
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -68,7 +74,6 @@ public class Program {
 
                 case 2:
                     System.out.println();
-                    //int idBike = proximoIdBike;
                     System.out.print("Modelo: ");
                     int model = sc.nextInt();
                     sc.nextLine();
@@ -81,7 +86,7 @@ public class Program {
 
                     System.out.print("Id da estação: ");
                     int stationId = sc.nextInt();
-                    Station est = station.get(stationId);
+                    Station est =  stationDao.buscaPorId(stationId);
 
                     if (est == null) {
                         System.out.println("Estação não encontrada!");
@@ -89,11 +94,9 @@ public class Program {
                     }
 
                     if (est.getBikes().size() < est.getCapacity()) {
-                        Bike newBike = new Bike(proximoIdBike, tipo, tatus, num);
+                        Bike newBike = new Bike(tipo, tatus, num);
                         newBike.setStation(est);
-                        bikes.put(proximoIdBike, newBike);
-                        est.addBike(newBike);
-                        proximoIdBike++;
+                        bikeDao.salvar(newBike);
                         System.out.println("Bike cadastrada com sucesso!");
                     }else {
                         System.out.println("Estação sem capacidade disponível!");
@@ -102,7 +105,6 @@ public class Program {
 
                 case 3:
                     System.out.println();
-                    int idClient = proximoIdClient;
                     System.out.print("Nome: ");
                     sc.nextLine();
                     name = sc.nextLine();
@@ -111,28 +113,27 @@ public class Program {
                     System.out.print("Data de nascimento: ");
                     String data = sc.nextLine();
                     birth = LocalDate.parse(data, fmt);
-                    client.put(proximoIdClient, new Customer(proximoIdClient, name, endereco, birth));
-                    proximoIdClient++;
+                    customerDao.salvar(new Customer(name, endereco, birth));
                     break;
 
                 case 4:
                     System.out.println();
                     System.out.print("Id da estação inicial: ");
                     int startStation = sc.nextInt();
-                    est = station.get(startStation);
+                    est = stationDao.buscaPorId(startStation);
                     if (est == null) {
                         System.out.println("Estação nâo encontrada!");
                         break;
                     }
-                    List<Bike> bikeDisp = bikes.values().stream().filter(b -> b.getStation() == est && b.getStatus() == BikeStatus.DISPONIVEL).toList();
                     System.out.println(est.getName());
+                    List<Bike> bikeDisp = bikeDao.buscarDisponiveisPorEstacao(est);
                     for (Bike bike : bikeDisp) {
                         System.out.println(bike);
                     }
 
                     System.out.print("Id da Bicicleta: ");
                     int iBike = sc.nextInt();
-                    Bike bic = bikes.get(iBike);
+                    Bike bic = bikeDao.bucasPorId(iBike);
                     if (bic == null || bic.getStatus() != BikeStatus.DISPONIVEL) {
                         System.out.println("Bicicleta indisponível ou não encontrada!");
                         break;
@@ -140,15 +141,12 @@ public class Program {
 
                     System.out.print("Id do cliente: ");
                     int iClient = sc.nextInt();
-                    Customer idCliente = client.get(iClient);
+                    Customer idCliente = customerDao.buscarPorId(iClient);
                     if (idCliente == null) {
                         System.out.println("Clinte não cadastrado!");
                         break;
                     }
-                    Ride novaRide = rideService.startRide(idRine, bic, est, idCliente);
-                    ride.put(idRine, novaRide);
-                    idRine++;
-
+                    rideService.startRide(bic, est, idCliente);
                     break;
 
                 case 5:
@@ -161,7 +159,7 @@ public class Program {
                     System.out.println();
                     System.out.print("Id da ride: ");
                     int rideId = sc.nextInt();
-                    Ride rideUse = ride.get(rideId);
+                    Ride rideUse = rideDao.buscarPorId(rideId);
                     if (rideUse == null) {
                         System.out.println("Ride não encontrada!");
                         break;
@@ -169,9 +167,10 @@ public class Program {
 
                     System.out.print("Id da estação final: ");
                     stationId = sc.nextInt();
-                    est = station.get(stationId);
+                    est = stationDao.buscaPorId(stationId);
                     if (est == null) {
                         System.out.println("Estação não encontrada!");
+                        break;
                     }
                     double precing = rideService.finishRide(rideUse, est);
                     System.out.println("Preço da corrida: " + precing);

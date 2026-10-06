@@ -1,5 +1,7 @@
 package com.bikeshare.entities;
 
+import com.bikeshare.entities.dao.BikeDao;
+import com.bikeshare.entities.dao.RideDao;
 import com.bikeshare.enums.BikeStatus;
 
 import java.time.Duration;
@@ -7,17 +9,22 @@ import java.time.LocalDateTime;
 
 public class RideService {
 
-    public Ride startRide(int id, Bike bike, Station startStation, Customer client) {
+    RideDao rideDao = new RideDao();
+    BikeDao bikeDao = new BikeDao();
+
+    public void startRide(Bike bike, Station startStation, Customer client) {
         startStation.removeBike(bike);
         bike.setStatus(BikeStatus.EM_USO);
+        bikeDao.update(bike);
 
-        Ride ride = new Ride(id, bike, client, startStation, LocalDateTime.now());
-        return ride;
+        Ride ride = new Ride(bike, client, startStation, LocalDateTime.now());
+        rideDao.salvar(ride);
     };
 
     public Double finishRide(Ride ride, Station endStation) {
         endStation.addBike(ride.getBike());
         ride.getBike().setStatus(BikeStatus.DISPONIVEL);
+        rideDao.update(ride);
         LocalDateTime now = LocalDateTime.now();
 
         Long duration = Duration.between(ride.getStartTime(), now).toMinutes();
@@ -31,6 +38,7 @@ public class RideService {
         }
 
         ride.finish(endStation, now, duration, princing);
+        rideDao.update(ride);
 
         return princing;
 

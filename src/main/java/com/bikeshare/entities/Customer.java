@@ -18,8 +18,10 @@ public class Customer {
     private String email;
     private LocalDate dateBirth;
 
-    public Customer(int id, String name, String email, LocalDate dateBirth) {
-        this.id = id;
+    public Customer() {
+    }
+
+    public Customer(String name, String email, LocalDate dateBirth) {
         this.name = name;
         this.email = email;
         this.dateBirth = dateBirth;

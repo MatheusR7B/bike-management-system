@@ -75,8 +75,7 @@ public class Ride {
         return duration;
     }
 
-    public Ride(int id, Bike bike, Customer customer, Station startStation, LocalDateTime startTime) {
-        this.id = id;
+    public Ride(Bike bike, Customer customer, Station startStation, LocalDateTime startTime) {
         this.bike = bike;
         this.customer = customer;
         this.startStation = startStation;
