@@ -47,8 +47,23 @@ public class BikeDao {
                 .getResultList();
         em.close();
         return result;
-
     }
 
+    public Long totalBike() {
+        EntityManager em = emf.createEntityManager();
+        Long quantity = em.createQuery("SELECT COUNT(b) FROM Bike b",Long.class)
+                .getSingleResult();
+        em.close();
+        return quantity;
+    }
+
+    public Long countStatus(BikeStatus status) {
+        EntityManager em = emf.createEntityManager();
+        Long quantity = em.createQuery("SELECT COUNT(b) FROM Bike b WHERE b.status = :status", Long.class)
+                .setParameter("status", status)
+                .getSingleResult();
+        em.close();
+        return quantity;
+    }
 
 }

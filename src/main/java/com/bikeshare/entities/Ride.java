@@ -14,9 +14,6 @@ public class Ride {
     @Transient
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    public Ride() {
-    }
-
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
@@ -42,6 +39,9 @@ public class Ride {
     private LocalDateTime endTime;
     private Long duration;
     private Double princing;
+
+    public Ride() {
+    }
 
     public Bike getBike() {
         return bike;

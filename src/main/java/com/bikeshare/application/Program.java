@@ -190,44 +190,39 @@ public class Program {
 
                 case 7:
 
-                    Map<BikeStatus, Long> countStatus = bikes.values().stream().collect(Collectors.groupingBy(Bike::getStatus, Collectors.counting()));
-
-                    Map<Bike, Long> countBike = ride.values().stream().filter(b -> b.getStatus() == RideStatus.FINALIZADA).collect(Collectors.groupingBy(Ride::getBike, Collectors.counting()));
-                    Optional<Map.Entry<Bike, Long>> maxBikeEntry = countBike.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue));
-
-                    Map<Station, Long> countStation = ride.values().stream().collect(Collectors.groupingBy(Ride::getStartStation, Collectors.counting()));
-                    Optional<Map.Entry<Station, Long>> maxStationEntry = countStation.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue));
-
-                    List<Ride> listRideFinish = ride.values().stream().filter(b -> b.getStatus() == RideStatus.FINALIZADA).toList();
-                    Long avgDuration = Math.round(listRideFinish.stream().mapToLong(Ride::getDuration).average().orElse(0.0));
-
                     System.out.println("========== RELATÓRIO ==========");
                     System.out.println();
-                    System.out.println("Total de bicicletas: " + bikes.size());
-                    System.out.println("Disponiveis: " + countStatus.get(BikeStatus.DISPONIVEL));
-                    System.out.println("Em uso: " + countStatus.get(BikeStatus.EM_USO));
-                    System.out.println("Manutenção: " + countStatus.get(BikeStatus.MANUTENCAO));
+                    System.out.println("Total de bicicletas: " + bikeDao.totalBike());
+                    System.out.println("Disponiveis: " + bikeDao.countStatus(BikeStatus.DISPONIVEL));
+                    System.out.println("Em uso: " + bikeDao.countStatus(BikeStatus.EM_USO));
                     System.out.println();
-                    System.out.println("Viagens realizadas: " + ride.values().stream().filter(b -> b.getStatus() == RideStatus.FINALIZADA).count());
+                    System.out.println("Viagens realizadas: " + rideDao.finishRide());
                     System.out.println();
-                    if (maxBikeEntry.isPresent()) {
-                        System.out.println("Bicicleta mais utilizada: ");
-                        Map.Entry<Bike, Long> entry = maxBikeEntry.get();
-                        System.out.println("#" + entry.getKey().getId() + " - " + entry.getValue() + " viagens");
-                    } else {
-                        System.out.println("Nenhuma bicicleta utilizada!");
-                    }
 
-                    if (maxStationEntry.isPresent()) {
-                        System.out.println("Estação mais movimentada: ");
-                        Map.Entry<Station, Long> entry = maxStationEntry.get();
-                        System.out.println(entry.getKey().getName() + " - " + entry.getValue() + " retiradas");
+                    List<Object[]> result = rideDao.bikeMaisUsada();
+                    if (!result.isEmpty()) {
+                        Object[] primeira = result.get(0);
+                        Bike bikeMaisUsada = (Bike) primeira[0];
+                        Long vezesUsada = (Long) primeira[1];
+
+                        System.out.println("Bicicleta mais utilizada: ");
+                        System.out.println("#" + bikeMaisUsada.getId() + " - " + vezesUsada + " viagens");
                     } else {
                         System.out.println("Nenhuma viagem realizada!");
                     }
 
+                    result = rideDao.estacaoMaisUsada();
+                    if(!result.isEmpty()) {
+                        Object[] primeira = result.get(0);
+                        Station stationMaisUsada = (Station) primeira[0];
+                        Long vezesUsada = (Long) primeira[1];
+
+                        System.out.println("Estação mais movimentada: ");
+                        System.out.println(stationMaisUsada.getName() + " - " + vezesUsada + " retiradas");
+                    }
+
                     System.out.println("Tempo médio das viagens: ");
-                    System.out.println(avgDuration + " minutos");
+                    System.out.println(rideDao.avgDuration() + " minutos");
                     break;
 
                 case 0:
