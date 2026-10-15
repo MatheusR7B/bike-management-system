@@ -7,43 +7,27 @@ import com.bikeshare.entities.dao.RideDao;
 import com.bikeshare.entities.dao.StationDao;
 import com.bikeshare.enums.BikeStatus;
 import com.bikeshare.enums.BikeType;
-import com.bikeshare.enums.RideStatus;
 import com.bikeshare.persistence.JPAUtil;
-import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Scanner;
 
 public class Program {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        //EntityManagerFactory emf = JPAUtil.getEmf();
         StationDao stationDao = new StationDao();
         BikeDao bikeDao = new BikeDao();
         CustomerDao customerDao = new CustomerDao();
         RideDao rideDao = new RideDao();
-
+        RideService rideService = new RideService();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         int opcao;
-        int id;
         String name;
         String endereco;
-        int numb;
-        LocalDate birth;
-        Map<Integer, Station> station = new HashMap<>();
-        Map<Integer, Bike> bikes = new HashMap<>();
-        Map<Integer, Ride> ride = new HashMap<>();
-        Map<Integer, Customer> client = new HashMap<>();
-        RideService rideService = new RideService();
-
-        int proximoIdBike = 1;
-        int proximoIdStation = 1;
-        int proximoIdClient = 1;
-        int idRine = 1;
 
         do {
             System.out.println();
@@ -67,7 +51,7 @@ public class Program {
                     System.out.print("Endereco: ");
                     endereco = sc.nextLine();
                     System.out.print("Capacidade: ");
-                    numb = sc.nextInt();
+                    int numb = sc.nextInt();
                     stationDao.salvar(new Station(name, endereco, numb));
                     System.out.println("Estação cadastrada!");
                     break;
@@ -78,9 +62,6 @@ public class Program {
                     int model = sc.nextInt();
                     sc.nextLine();
                     BikeType tipo = BikeType.type(model);
-                    System.out.print("Status: ");
-                    int status = sc.nextInt();
-                    BikeStatus tatus = BikeStatus.porp(status);
                     System.out.print("Quilometragem: ");
                     Double num = sc.nextDouble();
 
@@ -93,8 +74,8 @@ public class Program {
                         break;
                     }
 
-                    if (est.getBikes().size() < est.getCapacity()) {
-                        Bike newBike = new Bike(tipo, tatus, num);
+                    if (bikeDao.countForStation(est) < est.getCapacity()) {
+                        Bike newBike = new Bike(tipo, BikeStatus.porp(1), num);
                         newBike.setStation(est);
                         bikeDao.salvar(newBike);
                         System.out.println("Bike cadastrada com sucesso!");
@@ -112,7 +93,7 @@ public class Program {
                     endereco = sc.nextLine();
                     System.out.print("Data de nascimento: ");
                     String data = sc.nextLine();
-                    birth = LocalDate.parse(data, fmt);
+                    LocalDate birth = LocalDate.parse(data, fmt);
                     customerDao.salvar(new Customer(name, endereco, birth));
                     break;
 
@@ -134,7 +115,7 @@ public class Program {
                     System.out.print("Id da Bicicleta: ");
                     int iBike = sc.nextInt();
                     Bike bic = bikeDao.bucasPorId(iBike);
-                    if (bic == null || bic.getStatus() != BikeStatus.DISPONIVEL) {
+                    if (bic == null || bic.getStatus() != BikeStatus.DISPONIVEL || bic.getStation() != est) {
                         System.out.println("Bicicleta indisponível ou não encontrada!");
                         break;
                     }
@@ -151,7 +132,7 @@ public class Program {
 
                 case 5:
                     System.out.println();
-                    List<Ride> listRide = ride.values().stream().filter(b -> b.getStatus() == RideStatus.EM_ANDAMENTO).toList();
+                    List<Ride> listRide = rideDao.rideEmAndamento();
                     for (Ride rid : listRide) {
                         System.out.println(rid);
                     }
@@ -172,6 +153,10 @@ public class Program {
                         System.out.println("Estação não encontrada!");
                         break;
                     }
+                    if (bikeDao.countForStation(est) < est.getCapacity()){
+                        System.out.println("Estação lotada!");
+                        break;
+                    }
                     double precing = rideService.finishRide(rideUse, est);
                     System.out.println("Preço da corrida: " + precing);
 
@@ -179,10 +164,10 @@ public class Program {
 
                 case 6:
                     System.out.println();
-                    for (Station station1 : station.values()) {
+                    for (Station station1 : stationDao.todasStation()) {
                         System.out.println();
                         System.out.println(station1.getName());
-                        for (Bike bike : station1.getBikes()) {
+                        for (Bike bike : bikeDao.buscarPorEstacao(station1)) {
                             System.out.println(bike);
                         }
                     }

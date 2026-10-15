@@ -78,4 +78,13 @@ public class RideDao {
         return media;
     }
 
+    public List<Ride> rideEmAndamento() {
+        EntityManager em = emf.createEntityManager();
+        List<Ride> list = em.createQuery("SELECT r FROM Ride r WHERE r.status = :status", Ride.class)
+                .setParameter("status", RideStatus.EM_ANDAMENTO)
+                .getResultList();
+        em.close();
+        return list;
+    }
+
 }

@@ -23,9 +23,7 @@ public class BikeDao {
 
     public Bike bucasPorId(int id) {
         EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
         Bike bike = em.find(Bike.class, id);
-        em.getTransaction().commit();
         em.close();
         return bike;
     }
@@ -36,6 +34,16 @@ public class BikeDao {
         em.merge(bike);
         em.getTransaction().commit();
         em.close();
+    }
+
+    public List<Bike> buscarPorEstacao(Station station) {
+        EntityManager em = emf.createEntityManager();
+        List<Bike> bikes = em.createQuery(
+                        "SELECT b FROM Bike b WHERE b.station = :station", Bike.class)
+                .setParameter("station", station)
+                .getResultList();
+        em.close();
+        return bikes;
     }
 
     public List<Bike> buscarDisponiveisPorEstacao(Station station) {
@@ -64,6 +72,16 @@ public class BikeDao {
                 .getSingleResult();
         em.close();
         return quantity;
+    }
+
+    public Long countForStation(Station station) {
+        EntityManager em = emf.createEntityManager();
+        Long county = em.createQuery(
+                "SELECT COUNT(b) FROM Bike b WHERE b.station = :station", Long.class)
+                .setParameter("station", station)
+                .getSingleResult();
+        em.close();
+        return county;
     }
 
 }

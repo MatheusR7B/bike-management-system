@@ -1,10 +1,11 @@
 package com.bikeshare.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 public class Station {
@@ -15,9 +16,6 @@ public class Station {
     private String name;
     private String address;
     private int capacity;
-
-    @OneToMany(mappedBy = "station")
-    private Set<Bike> bikes = new HashSet<>();
     
     public Station() {
     }
@@ -29,9 +27,6 @@ public class Station {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) { this.id = id;
     }
 
     public String getName() {
@@ -58,34 +53,10 @@ public class Station {
         this.capacity = capacity;
     }
 
-    public Set<Bike> getBikes() {
-        return bikes;
-    }
-
-    public void addBike(Bike bike) {
-        bikes.add(bike);
-    }
-
-    public void removeBike(Bike bike) {
-        bikes.remove(bike);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id == station.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Estação ").append(name).append("\n");
+        sb.append("Estação ").append(name);
         return sb.toString();
     }
 }

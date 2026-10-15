@@ -5,6 +5,8 @@ import com.bikeshare.persistence.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.util.List;
+
 public class StationDao {
 
     private EntityManagerFactory emf = JPAUtil.getEmf();
@@ -21,6 +23,14 @@ public class StationDao {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Station station = em.find(Station.class, id);
+        em.close();
+        return station;
+    }
+
+    public List<Station> todasStation() {
+        EntityManager em = emf.createEntityManager();
+        List<Station> station = em.createQuery("SELECT s FROM Station s", Station.class)
+                        .getResultList();
         em.close();
         return station;
     }

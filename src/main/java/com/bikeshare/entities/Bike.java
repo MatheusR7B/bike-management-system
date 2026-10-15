@@ -75,18 +75,6 @@ public class Bike {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Bike bike = (Bike) o;
-        return id == bike.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
-    @Override
     public String toString() {
         return "└── Bike #" + id + " - " + status;
     }

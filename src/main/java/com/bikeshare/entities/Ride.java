@@ -1,10 +1,8 @@
 package com.bikeshare.entities;
 
-import com.bikeshare.enums.BikeStatus;
 import com.bikeshare.enums.RideStatus;
 import jakarta.persistence.*;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -38,7 +36,7 @@ public class Ride {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Long duration;
-    private Double princing;
+    private double princing;
 
     public Ride() {
     }
@@ -84,6 +82,9 @@ public class Ride {
     }
 
     public void finish(Station endStation, LocalDateTime endTime, Long duration, double princing) {
+        if (status != RideStatus.EM_ANDAMENTO){
+            throw new IllegalStateException("A ride " + id + " já foi finalizada");
+        }
         this.endStation = endStation;
         this.endTime = endTime;
         this.duration = duration;

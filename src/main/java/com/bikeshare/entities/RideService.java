@@ -13,18 +13,17 @@ public class RideService {
     BikeDao bikeDao = new BikeDao();
 
     public void startRide(Bike bike, Station startStation, Customer client) {
-        startStation.removeBike(bike);
         bike.setStatus(BikeStatus.EM_USO);
+        bike.setStation(null);
         bikeDao.update(bike);
-
         Ride ride = new Ride(bike, client, startStation, LocalDateTime.now());
         rideDao.salvar(ride);
     };
 
     public Double finishRide(Ride ride, Station endStation) {
-        endStation.addBike(ride.getBike());
-        ride.getBike().setStatus(BikeStatus.DISPONIVEL);
-        rideDao.update(ride);
+        Bike bike = ride.getBike();
+        bike.setStatus(BikeStatus.DISPONIVEL);
+        bike.setStation(endStation);
         LocalDateTime now = LocalDateTime.now();
 
         Long duration = Duration.between(ride.getStartTime(), now).toMinutes();
@@ -37,11 +36,11 @@ public class RideService {
             princing = 4.0 + 2 * Math.ceilDiv(minExcendentes, 10);
         }
 
+        bikeDao.update(bike);
         ride.finish(endStation, now, duration, princing);
         rideDao.update(ride);
 
         return princing;
-
     }
 
 }
